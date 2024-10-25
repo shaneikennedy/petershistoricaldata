@@ -4,12 +4,12 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { ChartContainer } from "@/components/ui/chart"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
-export function PeterHistoricalDataComponent({ fetchData }: { fetchData: (symbol: string) => Promise<{ date: string, high: number, volume: number, low: number, open: number, close: number, adjClose: number }[]> }) {
+export function PeterHistoricalDataComponent({ fetchData }: { fetchData: (symbol: string) => Promise<{ date: string, high: number, volume: number, low: number, open: number, close: number, adjClose?: number }[]> }) {
     const [searchQuery, setSearchQuery] = useState("")
-  const [data, setData] = useState<Array<{ date: string, volume: number, high: number, low: number, open: number, close: number, adjClose: number }>>([])
+  const [data, setData] = useState<Array<{ date: string, volume: number, high: number, low: number, open: number, close: number, adjClose?: number }>>([])
 
     const handleDownload = () => {
         const csv = [
@@ -25,11 +25,11 @@ export function PeterHistoricalDataComponent({ fetchData }: { fetchData: (symbol
           ...data.map(item => [
             item.date,
             item.high.toFixed(4),
-              item.volume,
+            item.volume,
             item.open.toFixed(4),
             item.low.toFixed(4),
             item.close.toFixed(4),
-            item.adjClose.toFixed(4),
+            item.adjClose?.toFixed(4),
           ])
         ].map(row => row.join(",")).join("\n")
 
@@ -58,7 +58,7 @@ export function PeterHistoricalDataComponent({ fetchData }: { fetchData: (symbol
         <div className="container mx-auto p-4">
             <Card>
                 <CardHeader>
-                    <CardTitle className="text-2xl font-bold">Peter's Historical Data</CardTitle>
+                    <CardTitle className="text-2xl font-bold">Peter&apos;s Historical Data</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="flex gap-2 mb-4">

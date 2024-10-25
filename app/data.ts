@@ -2,7 +2,7 @@
 import yahooFinance from "yahoo-finance2";
 
 function oneYearAgo() {
-  let d = new Date(0);
+  const d = new Date(0);
   d.setUTCMilliseconds(Date.now() - 31104000000); // 12m * 30 d/m *24hr/d * 60m/hr * 60s/m
   return d;
 }
