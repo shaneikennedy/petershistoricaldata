@@ -75,6 +75,7 @@ export function PeterHistoricalDataComponent({ fetchData }: { fetchData: (symbol
 
                     {data.length > 0 ? (
                         <div className="h-[400px]">
+                          <h1 className="text-center">{searchQuery.toUpperCase()}</h1>
                             <ChartContainer
                                 config={{
                                     closePrice: {
