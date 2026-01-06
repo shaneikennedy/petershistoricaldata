@@ -3,13 +3,14 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts"
 import { ChartContainer } from "@/components/ui/chart"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
-export function PeterHistoricalDataComponent({ fetchData }: { fetchData: (symbol: string) => Promise<{ date: string, high: number, volume: number, low: number, open: number, close: number, adjClose?: number }[]> }) {
+export function PeterHistoricalDataComponent({ fetchDataAction }: { fetchDataAction: (symbol: string) => Promise<{ date: string; high: number | null; low: number | null; open: number | null; close: number | null; volume: number | null; adjclose?: number | null | undefined; }[]> }) {
     const [searchQuery, setSearchQuery] = useState("")
-  const [data, setData] = useState<Array<{ date: string, volume: number, high: number, low: number, open: number, close: number, adjClose?: number }>>([])
+  const [data, setData] = useState<Array<{ date: string; high: number | null; low: number | null; open: number | null; close: number | null; volume: number | null; adjclose?: number | null | undefined; }>>([])
+    const [chartTitle, setChartTitle ] = useState<string | null>()
 
     const handleDownload = () => {
         const csv = [
@@ -24,12 +25,12 @@ export function PeterHistoricalDataComponent({ fetchData }: { fetchData: (symbol
           ],
           ...data.map(item => [
             item.date,
-            item.high.toFixed(4),
+            item.high?.toFixed(4),
             item.volume,
-            item.open.toFixed(4),
-            item.low.toFixed(4),
-            item.close.toFixed(4),
-            item.adjClose?.toFixed(4),
+            item.open?.toFixed(4),
+            item.low?.toFixed(4),
+            item.close?.toFixed(4),
+            item.adjclose?.toFixed(4),
           ])
         ].map(row => row.join(",")).join("\n")
 
@@ -47,7 +48,8 @@ export function PeterHistoricalDataComponent({ fetchData }: { fetchData: (symbol
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevent the page reload
     try {
-      const result = await fetchData(searchQuery);
+      const result = await fetchDataAction(searchQuery);
+      setChartTitle(searchQuery);
       setData(result)
     } catch (e) {
       console.error(e);
@@ -75,7 +77,7 @@ export function PeterHistoricalDataComponent({ fetchData }: { fetchData: (symbol
 
                     {data.length > 0 ? (
                         <div className="h-[400px]">
-                          <h1 className="text-center">{searchQuery.toUpperCase()}</h1>
+                          <h1 className="text-center">{chartTitle}</h1>
                             <ChartContainer
                                 config={{
                                     closePrice: {
@@ -84,7 +86,6 @@ export function PeterHistoricalDataComponent({ fetchData }: { fetchData: (symbol
                                     },
                                 }}
                             >
-                                <ResponsiveContainer width="100%" aspect={3}>
                                     <LineChart
                                         width={1200}
                                         height={400}
@@ -100,9 +101,8 @@ export function PeterHistoricalDataComponent({ fetchData }: { fetchData: (symbol
                                         <XAxis dataKey="date" />
                                         <YAxis />
                                         <Tooltip />
-                                        <Line type="monotone" dataKey="adjClose" stroke="#82ca9d" />
+                                        <Line type="monotone" dataKey="adjclose" stroke="#82ca9d" />
                                     </LineChart>
-                                </ResponsiveContainer>
                             </ChartContainer>
                         </div>
                     ) : (
