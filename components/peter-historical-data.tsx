@@ -4,7 +4,6 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts"
-import { ChartContainer } from "@/components/ui/chart"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export function PeterHistoricalDataComponent({ fetchDataAction }: { fetchDataAction: (symbol: string) => Promise<{ date: string; high: number | null; low: number | null; open: number | null; close: number | null; volume: number | null; adjclose?: number | null | undefined; }[]> }) {
@@ -76,35 +75,15 @@ export function PeterHistoricalDataComponent({ fetchDataAction }: { fetchDataAct
                       </form>
 
                     {data.length > 0 ? (
-                        <div className="h-[400px]">
+                        <div>
                           <h1 className="text-center">{chartTitle}</h1>
-                            <ChartContainer
-                                config={{
-                                    closePrice: {
-                                        label: "Close Price",
-                                        color: "hsl(var(--chart-1))",
-                                    },
-                                }}
-                            >
-                                    <LineChart
-                                        width={1200}
-                                        height={400}
-                                        data={data}
-                                        margin={{
-                                            top: 5,
-                                            right: 30,
-                                            left: 20,
-                                            bottom: 5,
-                                        }}
-                                    >
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="date" />
-                                        <YAxis />
-                                        <Tooltip />
-                                        <Line type="monotone" dataKey="adjclose" stroke="#82ca9d" />
-                                    </LineChart>
-                            </ChartContainer>
-                        </div>
+			    <LineChart style={{ width: '100%', height: '100%', aspectRatio: 1.618, maxWidth: 800, margin: 'auto' }} responsive data={data}>
+      <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+      <XAxis dataKey="date" />
+      <YAxis width="auto" />
+	<Tooltip />
+      <Line type="monotone" dataKey="adjclose" stroke="#8884d8" />
+    </LineChart>                        </div>
                     ) : (
                         <p className="text-center text-muted-foreground">Enter a search query and hit enter to find data.</p>
                     )}
